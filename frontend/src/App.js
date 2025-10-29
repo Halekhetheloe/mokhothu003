@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import FeedbackForm from './components/FeedbackForm';
 import FeedbackList from './components/FeedbackList';
 import Dashboard from './components/Dashboard';
+import Footer from './components/Footer'; // Add this import
 import './styles/App.css';
 
 // Simplified API URL configuration for Render deployment
@@ -131,6 +132,9 @@ function App() {
           <Dashboard feedbacks={feedbacks} />
         )}
       </main>
+
+      {/* Add Footer here */}
+      <Footer />
     </div>
   );
 }
