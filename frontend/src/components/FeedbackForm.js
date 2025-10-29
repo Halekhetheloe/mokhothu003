@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const FeedbackForm = ({ onSubmit }) => {
+const FeedbackForm = ({ onSubmit, loading }) => {
   const [formData, setFormData] = useState({
     studentName: '',
     courseCode: '',
@@ -83,6 +83,7 @@ const FeedbackForm = ({ onSubmit }) => {
             value={formData.studentName}
             onChange={handleChange}
             className={errors.studentName ? 'error' : ''}
+            disabled={loading}
           />
           {errors.studentName && <span className="error-message">{errors.studentName}</span>}
         </div>
@@ -96,6 +97,7 @@ const FeedbackForm = ({ onSubmit }) => {
             value={formData.courseCode}
             onChange={handleChange}
             className={errors.courseCode ? 'error' : ''}
+            disabled={loading}
           />
           {errors.courseCode && <span className="error-message">{errors.courseCode}</span>}
         </div>
@@ -109,6 +111,7 @@ const FeedbackForm = ({ onSubmit }) => {
             onChange={handleChange}
             rows="4"
             className={errors.comments ? 'error' : ''}
+            disabled={loading}
           />
           {errors.comments && <span className="error-message">{errors.comments}</span>}
         </div>
@@ -121,6 +124,7 @@ const FeedbackForm = ({ onSubmit }) => {
             value={formData.rating}
             onChange={handleChange}
             className={errors.rating ? 'error' : ''}
+            disabled={loading}
           >
             <option value="">Select rating</option>
             <option value="1">1 - Poor</option>
@@ -132,7 +136,9 @@ const FeedbackForm = ({ onSubmit }) => {
           {errors.rating && <span className="error-message">{errors.rating}</span>}
         </div>
 
-        <button type="submit" className="submit-btn">Submit Feedback</button>
+        <button type="submit" className="submit-btn" disabled={loading}>
+          {loading ? 'Submitting...' : 'Submit Feedback'}
+        </button>
       </form>
     </div>
   );

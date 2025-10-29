@@ -4,16 +4,16 @@ import FeedbackList from './components/FeedbackList';
 import Dashboard from './components/Dashboard';
 import './styles/App.css';
 
-// Dynamic API URL for different environments - UPDATED FOR RENDER
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? process.env.REACT_APP_API_URL || 'https://mokhothu-backend.onrender.com'
-  : 'http://localhost:5000';
+// Simplified API URL configuration for Render deployment
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 function App() {
   const [feedbacks, setFeedbacks] = useState([]);
   const [activeTab, setActiveTab] = useState('form');
+  const [loading, setLoading] = useState(false);
 
   const fetchFeedbacks = async () => {
+    setLoading(true);
     try {
       console.log('Fetching from:', `${API_BASE_URL}/api/feedback`);
       const response = await fetch(`${API_BASE_URL}/api/feedback`);
@@ -25,6 +25,8 @@ function App() {
     } catch (error) {
       console.error('Error fetching feedbacks:', error);
       alert('Failed to load feedbacks. Please check if the backend is running.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -33,6 +35,7 @@ function App() {
   }, []);
 
   const handleFeedbackSubmit = async (feedbackData) => {
+    setLoading(true);
     try {
       const response = await fetch(`${API_BASE_URL}/api/feedback`, {
         method: 'POST',
@@ -43,7 +46,7 @@ function App() {
       });
 
       if (response.ok) {
-        fetchFeedbacks();
+        await fetchFeedbacks();
         setActiveTab('list');
         alert('Feedback submitted successfully!');
       } else {
@@ -53,18 +56,21 @@ function App() {
     } catch (error) {
       console.error('Error submitting feedback:', error);
       alert('Failed to submit feedback. Please check your connection.');
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleDeleteFeedback = async (id) => {
     if (window.confirm('Are you sure you want to delete this feedback?')) {
+      setLoading(true);
       try {
         const response = await fetch(`${API_BASE_URL}/api/feedback/${id}`, {
           method: 'DELETE',
         });
 
         if (response.ok) {
-          fetchFeedbacks();
+          await fetchFeedbacks();
           alert('Feedback deleted successfully!');
         } else {
           const error = await response.json();
@@ -73,6 +79,8 @@ function App() {
       } catch (error) {
         console.error('Error deleting feedback:', error);
         alert('Failed to delete feedback. Please check your connection.');
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -85,18 +93,21 @@ function App() {
           <button 
             className={activeTab === 'form' ? 'active' : ''} 
             onClick={() => setActiveTab('form')}
+            disabled={loading}
           >
             Submit Feedback
           </button>
           <button 
             className={activeTab === 'list' ? 'active' : ''} 
             onClick={() => setActiveTab('list')}
+            disabled={loading}
           >
             View Feedback
           </button>
           <button 
             className={activeTab === 'dashboard' ? 'active' : ''} 
             onClick={() => setActiveTab('dashboard')}
+            disabled={loading}
           >
             Dashboard
           </button>
@@ -104,13 +115,16 @@ function App() {
       </header>
 
       <main className="app-main">
+        {loading && <div className="loading">Loading...</div>}
+        
         {activeTab === 'form' && (
-          <FeedbackForm onSubmit={handleFeedbackSubmit} />
+          <FeedbackForm onSubmit={handleFeedbackSubmit} loading={loading} />
         )}
         {activeTab === 'list' && (
           <FeedbackList 
             feedbacks={feedbacks} 
             onDelete={handleDeleteFeedback}
+            loading={loading}
           />
         )}
         {activeTab === 'dashboard' && (

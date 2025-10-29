@@ -1,6 +1,6 @@
 import React from 'react';
 
-const FeedbackList = ({ feedbacks, onDelete }) => {
+const FeedbackList = ({ feedbacks, onDelete, loading }) => {
   const getRatingStars = (rating) => {
     return '★'.repeat(rating) + '☆'.repeat(5 - rating);
   };
@@ -14,6 +14,15 @@ const FeedbackList = ({ feedbacks, onDelete }) => {
       minute: '2-digit'
     });
   };
+
+  if (loading) {
+    return (
+      <div className="feedback-list-container">
+        <h2>Course Feedback</h2>
+        <p className="loading">Loading feedbacks...</p>
+      </div>
+    );
+  }
 
   if (feedbacks.length === 0) {
     return (
@@ -29,7 +38,7 @@ const FeedbackList = ({ feedbacks, onDelete }) => {
       <h2>Course Feedback ({feedbacks.length})</h2>
       <div className="feedback-list">
         {feedbacks.map(feedback => (
-          <div key={feedback.id} className="feedback-item">
+          <div key={feedback._id || feedback.id} className="feedback-item">
             <div className="feedback-header">
               <h3>{feedback.courseCode}</h3>
               <span className="rating-stars">
@@ -45,15 +54,16 @@ const FeedbackList = ({ feedbacks, onDelete }) => {
             <div className="feedback-footer">
               <span className="student-name">By: {feedback.studentName}</span>
               <span className="feedback-date">
-                {formatDate(feedback.createdAt)}
+                {formatDate(feedback.createdAt || feedback.date)}
               </span>
             </div>
             
             <button 
               className="delete-btn"
-              onClick={() => onDelete(feedback.id)}
+              onClick={() => onDelete(feedback._id || feedback.id)}
+              disabled={loading}
             >
-              Delete
+              {loading ? 'Deleting...' : 'Delete'}
             </button>
           </div>
         ))}
