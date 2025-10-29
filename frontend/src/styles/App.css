@@ -169,7 +169,7 @@ body {
 }
 
 .feedback-item {
-  background: white;
+  background: rgb(208, 205, 205);
   border-radius: 10px;
   padding: 1.5rem;
   box-shadow: 0 3px 10px rgba(0,0,0,0.1);
@@ -223,7 +223,7 @@ body {
 }
 
 .delete-btn {
-  background: #e74c3c;
+  background: #82de45;
   color: white;
   border: none;
   padding: 0.5rem 1rem;
@@ -233,7 +233,7 @@ body {
 }
 
 .delete-btn:hover {
-  background: #c0392b;
+  background: #e10a0a;
 }
 
 /* Dashboard Styles */
